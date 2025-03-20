@@ -1,4 +1,4 @@
-FROM gradle:latest AS builder
+FROM --platform=$BUILDPLATFORM gradle:jdk21 AS builder
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ COPY src /app/src
 
 RUN gradle build --no-daemon
 
-FROM eclipse-temurin:21-jre
+FROM --platform=$TARGETPLATFORM eclipse-temurin:21-jre
 
 WORKDIR /app
 
