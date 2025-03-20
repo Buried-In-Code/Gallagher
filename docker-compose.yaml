@@ -1,0 +1,28 @@
+services:
+  gallagher:
+    container_name: 'Gallagher'
+    environment:
+      TZ: 'Pacific/Auckland'
+    expose:
+      - '8080'
+    image: 'ghcr.io/buried-in-code/gallagher:latest'
+    networks:
+      - 'gallagher-network'
+    restart: 'unless-stopped'
+
+  nginx:
+    container_name: 'Nginx'
+    environment:
+      TZ: 'Pacific/Auckland'
+    image: 'nginx:latest'
+    networks:
+      - 'gallagher-network'
+    ports:
+      - '80:80'
+    restart: 'unless-stopped'
+    volumes:
+      - './nginx/nginx.conf:/etc/nginx/nginx.cong:ro'
+
+networks:
+  gallagher-network:
+    driver: bridge

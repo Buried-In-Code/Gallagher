@@ -1,0 +1,6 @@
+# ===== Folders =====
+.gradle/
+.idea/
+build/
+
+# ===== Files =====

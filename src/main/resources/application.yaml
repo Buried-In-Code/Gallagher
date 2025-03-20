@@ -1,0 +1,3 @@
+logging:
+  pattern:
+    console: "[%highlight(%d{yyyy-MM-dd HH:mm:ss}){white}] [%highlight(%-5level){FATAL=magenta, ERROR=red, WARN=yellow, INFO=white, DEBUG=blue}] {%highlight(%logger{2}){FATAL=magenta, ERROR=red, WARN=yellow, INFO=white, DEBUG=blue}} %msg%n"
