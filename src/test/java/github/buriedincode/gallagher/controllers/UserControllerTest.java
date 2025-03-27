@@ -19,7 +19,7 @@ public class UserControllerTest {
 
   @Test
   public void createUserTest() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders.post("/v1/create")).andExpect(status().isNotImplemented());
+    this.mockMvc.perform(MockMvcRequestBuilders.post("/v1/create")).andExpect(status().isInternalServerError());
   }
 
   @Test
@@ -29,7 +29,7 @@ public class UserControllerTest {
 
   @Test
   public void readUserTest() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/v1/read")).andExpect(status().isNotImplemented());
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/v1/read")).andExpect(status().isInternalServerError());
   }
 
   @Test

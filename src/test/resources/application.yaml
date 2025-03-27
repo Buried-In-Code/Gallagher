@@ -1,4 +1,9 @@
 ---
+gallagher:
+  api-key: "API-Key"
+  base-url: "http://127.0.0.1:25710"
+  cert-path: ""
+  key-path: ""
 logging:
   level:
     root: "INFO"

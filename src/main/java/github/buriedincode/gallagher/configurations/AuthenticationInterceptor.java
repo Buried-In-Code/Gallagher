@@ -20,7 +20,7 @@ public class AuthenticationInterceptor implements Interceptor {
     var requestTime = System.nanoTime();
     request = request.newBuilder().header("Accept", "*/*").header("Accept-Encoding", "gzip, deflate")
         .header("Authorization", credentials()).header("Connection", "keep-alive")
-        .header("Host", request.url().host()).header("User-Agent", "HTTPie/3.2.4").build();
+        .header("Host", request.url().host()).header("User-Agent", "onUgo-test/0.1.0").build();
     log.info("Sending request to {}\n{}", request.url(), request.headers());
 
     var response = chain.proceed(request);
