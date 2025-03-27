@@ -32,7 +32,8 @@ public class GallagherServiceImpl implements GallagherService {
   private String baseUrl;
 
   @Override
-  public Map<String, Object> createUser(Map<String, Object> data) throws IOException, ValidationException, NotFoundException {
+  public Map<String, Object> createUser(Map<String, Object> data)
+      throws IOException, ValidationException, NotFoundException {
     var details = fetchDetails();
     String cardholderUrl = getNestedValue(details, "features", "cardholders", "cardholders", "href");
     if (cardholderUrl == null) {
@@ -54,7 +55,7 @@ public class GallagherServiceImpl implements GallagherService {
   }
 
   @Override
-  public Map<String, Object> deleteUser() throws IOException, ValidationException {
+  public Map<String, Object> deleteUser() throws IOException, ValidationException, NotFoundException {
     return Map.of();
   }
 
@@ -69,7 +70,8 @@ public class GallagherServiceImpl implements GallagherService {
 
     var request = new Request.Builder().url(cardholderUrl).get().build();
     try {
-      List<Map<String, Object>> response = (List<Map<String, Object>>) makeRequest(request).getOrDefault("results", Collections.emptyList());
+      List<Map<String, Object>> response = (List<Map<String, Object>>) makeRequest(request)
+          .getOrDefault("results", Collections.emptyList());
       if (response.isEmpty())
         throw new NotFoundException();
       return response.getFirst();
@@ -79,7 +81,7 @@ public class GallagherServiceImpl implements GallagherService {
   }
 
   @Override
-  public Map<String, Object> updateUser() throws IOException, ValidationException {
+  public Map<String, Object> updateUser() throws IOException, ValidationException, NotFoundException {
     return Map.of();
   }
 
@@ -94,7 +96,8 @@ public class GallagherServiceImpl implements GallagherService {
     }
   }
 
-  private Map<String, Object> makeRequest(Request request) throws IOException, ValidationException, NotFoundException {
+  private Map<String, Object> makeRequest(Request request)
+      throws IOException, ValidationException, NotFoundException {
     try (var response = httpClient.newCall(request).execute()) {
       if (!response.isSuccessful()) {
         if (response.code() == 404)
