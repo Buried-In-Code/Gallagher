@@ -1,28 +1,33 @@
+---
 services:
   gallagher:
-    container_name: 'Gallagher'
+    container_name: "Gallagher"
+    env_file:
+    - "./env/.env"
     environment:
-      TZ: 'Pacific/Auckland'
+      TZ: "Pacific/Auckland"
+      GALLAGHER_API_KEY: "${GALLAGHER_API_KEY}"
+      GALLAGHER_BASE_URL: "${GALLAGHER_BASE_URL}"
+      GALLAGHER_CERT_PATH: "${GALLAGHER_CERT_PATH}"
+      GALLAGHER_KEY_PATH: "${GALLAGHER_KEY_PATH}"
     expose:
-      - '8080'
-    image: 'ghcr.io/buried-in-code/gallagher:latest'
+    - "8080"
+    image: "ghcr.io/buried-in-code/gallagher:latest"
     networks:
-      - 'gallagher-network'
-    restart: 'unless-stopped'
-
+    - "gallagher-network"
+    restart: "unless-stopped"
   nginx:
-    container_name: 'Nginx'
+    container_name: "Nginx"
     environment:
-      TZ: 'Pacific/Auckland'
-    image: 'nginx:latest'
+      TZ: "Pacific/Auckland"
+    image: "nginx:latest"
     networks:
-      - 'gallagher-network'
+    - "gallagher-network"
     ports:
-      - '80:80'
-    restart: 'unless-stopped'
+    - "80:80"
+    restart: "unless-stopped"
     volumes:
-      - './nginx/nginx.conf:/etc/nginx/nginx.cong:ro'
-
+    - "./nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
 networks:
   gallagher-network:
-    driver: bridge
+    driver: "bridge"

@@ -1,0 +1,11 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/api/cardholders"
+  },
+  "response": {
+    "headers": {"Content-Type": "application/json"},
+    "body": "{ \"message\": \"Unauthorized access to Gallagher API Gateway\" }",
+    "status": 401
+  }
+}

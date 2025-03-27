@@ -1,31 +1,12 @@
+---
 services:
-  gallagher:
-    build:
-      context: '.'
-      dockerfile: 'Dockerfile'
-    container_name: 'Gallagher'
+  wiremock:
+    container_name: "Wiremock"
     environment:
-      TZ: 'Pacific/Auckland'
-      SPRING_PROFILES_ACTIVE: 'local'
-    expose:
-      - '8080'
-    networks:
-      - 'gallagher-network'
-    restart: 'unless-stopped'
-
-  nginx:
-    container_name: 'Nginx'
-    environment:
-      TZ: 'Pacific/Auckland'
-    image: 'nginx:latest'
-    networks:
-      - 'gallagher-network'
+      TZ: "Pacific/Auckland"
+      WIREMOCK_OPTIONS: "--verbose"
+    image: "wiremock/wiremock:latest"
     ports:
-      - '80:80'
-    restart: 'unless-stopped'
+    - "25710:8080"
     volumes:
-      - './nginx/nginx.conf:/etc/nginx/nginx.cong:ro'
-
-networks:
-  gallagher-network:
-    driver: bridge
+    - "./wiremock:/home/wiremock"

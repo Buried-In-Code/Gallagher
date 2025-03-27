@@ -1,0 +1,65 @@
+{
+  "features": {
+    "outputs": {"outputs": {"href": "http://127.0.0.1:25710/api/outputs"}},
+    "accessGroups": {"accessGroups": {"href": "http://127.0.0.1:25710/api/access_groups"}},
+    "alarmZones": {"alarmZones": {"href": "http://127.0.0.1:25710/api/alarm_zones"}},
+    "cardTypes": {
+      "cardTypes": {"href": "http://127.0.0.1:25710/api/card_types"},
+      "assign": {"href": "http://127.0.0.1:25710/api/card_types/assign"}
+    },
+    "inputs": {"inputs": {"href": "http://127.0.0.1:25710/api/inputs"}},
+    "roles": {"roles": {"href": "http://127.0.0.1:25710/api/roles"}},
+    "interlockGroups": {"interlockGroups": {"href": "http://127.0.0.1:25710/api/interlock_groups"}},
+    "divisions": {"divisions": {"href": "http://127.0.0.1:25710/api/divisions"}},
+    "visits": {"visits": {"href": "http://127.0.0.1:25710/api/visits"}},
+    "operatorGroups": {"operatorGroups": {"href": "http://127.0.0.1:25710/api/operator_groups"}},
+    "receptions": {"receptions": {"href": "http://127.0.0.1:25710/api/receptions"}},
+    "schedules": {"schedules": {"href": "http://127.0.0.1:25710/api/schedules"}},
+    "fenceZones": {"fenceZones": {"href": "http://127.0.0.1:25710/api/fence_zones"}},
+    "personalDataFields": {"personalDataFields": {"href": "http://127.0.0.1:25710/api/personal_data_fields"}},
+    "events": {
+      "eventGroups": {"href": "http://127.0.0.1:25710/api/events/groups"},
+      "updates": {"href": "http://127.0.0.1:25710/api/events/updates"},
+      "divisions": {"href": "http://127.0.0.1:25710/api/divisions/view_events"},
+      "events": {"href": "http://127.0.0.1:25710/api/events"}
+    },
+    "macros": {"macros": {"href": "http://127.0.0.1:25710/api/macros"}},
+    "alarms": {
+      "alarms": {"href": "http://127.0.0.1:25710/api/alarms"},
+      "updates": {"href": "http://127.0.0.1:25710/api/alarms/updates"},
+      "divisions": {"href": "http://127.0.0.1:25710/api/divisions/view_alarms"}
+    },
+    "competencies": {"competencies": {"href": "http://127.0.0.1:25710/api/competencies"}},
+    "lockerBanks": {"lockerBanks": {"href": "http://127.0.0.1:25710/api/locker_banks"}},
+    "accessZones": {"accessZones": {"href": "http://127.0.0.1:25710/api/access_zones"}},
+    "doors": {"doors": {"href": "http://127.0.0.1:25710/api/doors"}},
+    "cardholders": {
+      "cardholders": {"href": "http://127.0.0.1:25710/api/cardholders"},
+      "updateLocationAccessZones": {"href": "http://127.0.0.1:25710/api/access_zones/update_cardholder_location"},
+      "changes": {"href": "http://127.0.0.1:25710/api/cardholders/changes"}
+    },
+    "dayCategories": {"dayCategories": {"href": "http://127.0.0.1:25710/api/day_categories"}},
+    "elevators": {"elevatorGroups": {"href": "http://127.0.0.1:25710/api/elevator_groups"}},
+    "items": {
+      "itemTypes": {"href": "http://127.0.0.1:25710/api/items/types"},
+      "updates": {"href": "http://127.0.0.1:25710/api/items/updates"},
+      "items": {"href": "http://127.0.0.1:25710/api/items"}
+    }
+  },
+  "versions": {
+    "api": {
+      "major": 9,
+      "minor": 20,
+      "build": 1435,
+      "revision": 0
+    },
+    "commandCentre": {
+      "major": 9,
+      "minor": 20,
+      "build": 1435,
+      "revision": 0
+    }
+  },
+  "me": {"client": {"href": "http://127.0.0.1:25710/api/items/11742"}},
+  "version": "9.20.1435.0"
+}

@@ -1,5 +1,10 @@
 package github.buriedincode.gallagher.controllers;
 
+import github.buriedincode.gallagher.exceptions.NotFoundException;
+import github.buriedincode.gallagher.exceptions.ValidationException;
+import github.buriedincode.gallagher.services.GallagherService;
+import java.io.IOException;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -7,14 +12,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/users")
+@RequestMapping("/v1")
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
+  private final GallagherService gallagherService;
+
   @PostMapping("/create")
-  public ResponseEntity<Void> createUser() {
+  public ResponseEntity<Map<String, Object>> createUser() {
     log.info("Request to create user");
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    try {
+      var details = gallagherService
+          .createUser(Map.of("firstName", "John", "lastName", "Smith", "@Email", "john@onugo.com"));
+      log.info("Details: {}", details);
+      return new ResponseEntity<>(details, HttpStatus.OK);
+    } catch (ValidationException ve) {
+      return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+    } catch (NotFoundException nfe) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    } catch (IOException ioe) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @DeleteMapping("/delete")
@@ -24,9 +42,19 @@ public class UserController {
   }
 
   @GetMapping("/read")
-  public ResponseEntity<Void> readUser() {
+  public ResponseEntity<Map<String, Object>> readUser() throws IOException {
     log.info("Request to get user");
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    try {
+      var details = gallagherService.searchUser("john@onugo.com");
+      log.info("Details: {}", details);
+      return new ResponseEntity<>(details, HttpStatus.OK);
+    } catch (ValidationException ve) {
+      return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+    } catch (NotFoundException nfe) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    } catch (IOException ioe) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @PutMapping("/update")

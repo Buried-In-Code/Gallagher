@@ -1,3 +1,10 @@
+---
 logging:
   pattern:
-    console: "[%highlight(%d{yyyy-MM-dd HH:mm:ss}){white}] [%highlight(%-5level){FATAL=magenta, ERROR=red, WARN=yellow, INFO=white, DEBUG=blue}] {%highlight(%logger{2}){FATAL=magenta, ERROR=red, WARN=yellow, INFO=white, DEBUG=blue}} %msg%n"
+    console: "[%highlight(%d{yyyy-MM-dd HH:mm:ss}){white}] [%highlight(%-5level){FATAL=magenta,\
+      \ ERROR=red, WARN=yellow, INFO=white, DEBUG=blue}] {%logger{2}} %msg%n"
+gallagher:
+  api-key: "${GALLAGHER_API_KEY}"
+  base-url: "${GALLAGHER_BASE_URL}"
+  cert-path: "${GALLAGHER_CERT_PATH}"
+  key-path: "${GALLAGHER_KEY_PATH}"

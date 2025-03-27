@@ -1,0 +1,13 @@
+{
+  "request": {
+    "headers": {"Authorization": {"matches": "Basic (.*)"}},
+    "method": "GET",
+    "url": "/api/cardholders"
+  },
+  "response": {
+    "headers": {"Content-Type": "application/json"},
+    "bodyFileName": "cardholders-missing-response.json",
+    "status": 200
+  },
+  "priority": 7
+}

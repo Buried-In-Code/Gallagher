@@ -15,8 +15,10 @@
 
 __TODO: Description__
 
+## Local development
+
+ - All external services should be mocked with Wiremock, and can be run with: `docker compose -f docker-compose-local.yaml up -d`
+
 ## Usage
 
-API is built using docker-compose, there are 2 environments:
- - Local, run with the command: `docker compose -f docker-compose-local.yaml up -d`
- - Releaee, run with the command: `docker compose up -d`
+ - Run with: `docker compose up -d`

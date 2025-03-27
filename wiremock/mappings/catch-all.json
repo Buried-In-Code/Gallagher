@@ -1,0 +1,8 @@
+{
+  "request": {"urlPattern": ".*"},
+  "response": {
+    "body": "",
+    "status": 404
+  },
+  "priority": 10
+}

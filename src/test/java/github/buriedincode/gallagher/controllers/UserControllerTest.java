@@ -19,21 +19,21 @@ public class UserControllerTest {
 
   @Test
   public void createUserTest() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders.post("/v1/users/create")).andExpect(status().isNotImplemented());
+    this.mockMvc.perform(MockMvcRequestBuilders.post("/v1/create")).andExpect(status().isNotImplemented());
   }
 
   @Test
   public void deleteUserTest() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders.delete("/v1/users/delete")).andExpect(status().isNotImplemented());
+    this.mockMvc.perform(MockMvcRequestBuilders.delete("/v1/delete")).andExpect(status().isNotImplemented());
   }
 
   @Test
   public void readUserTest() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/v1/users/read")).andExpect(status().isNotImplemented());
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/v1/read")).andExpect(status().isNotImplemented());
   }
 
   @Test
   public void updateUserTest() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders.put("/v1/users/update")).andExpect(status().isNotImplemented());
+    this.mockMvc.perform(MockMvcRequestBuilders.put("/v1/update")).andExpect(status().isNotImplemented());
   }
 }

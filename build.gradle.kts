@@ -21,8 +21,10 @@ repositories {
 dependencies {
     annotationProcessor(libs.lombok)
 
+    implementation(libs.bundles.okhttp)
     implementation(libs.bundles.spring.boot)
     implementation(libs.lombok)
+    implementation(libs.bouncycastle)
 
     testImplementation(libs.spring.boot.test) {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
@@ -59,6 +61,20 @@ spotless {
             .sortMembersVisibilityOrderEnabled(true)
             .sortMembersVisibilityOrder("B,R,D,V")
         leadingTabsToSpaces(2)
+    }
+    kotlin {
+        ktlint()
+    }
+    flexmark {
+        target("**/*.md")
+    }
+    json {
+        target("**/*.json")
+        simple().indentWithSpaces(2)
+    }
+    yaml {
+        target("**/*.yaml")
+        jackson().feature("ORDER_MAP_ENTRIES_BY_KEYS", true)
     }
 }
 

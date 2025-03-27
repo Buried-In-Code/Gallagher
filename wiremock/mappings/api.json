@@ -1,0 +1,12 @@
+{
+  "request": {
+    "headers": {"Authorization": {"matches": "Basic (.*)"}},
+    "method": "GET",
+    "url": "/api"
+  },
+  "response": {
+    "headers": {"Content-Type": "application/json"},
+    "bodyFileName": "api-response.json",
+    "status": 200
+  }
+}

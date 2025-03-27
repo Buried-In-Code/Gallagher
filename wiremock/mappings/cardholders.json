@@ -1,0 +1,13 @@
+{
+  "request": {
+    "headers": {"Authorization": {"matches": "Basic (.*)"}},
+    "method": "GET",
+    "queryParameters": {"pdf_337": {"matches": "\"john@onugo.com\""}},
+    "url": "/api/cardholders"
+  },
+  "response": {
+    "headers": {"Content-Type": "application/json"},
+    "bodyFileName": "cardholders-response.json",
+    "status": 200
+  }
+}
