@@ -13,10 +13,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -55,8 +52,25 @@ public class GallagherServiceImpl implements GallagherService {
   }
 
   @Override
-  public Map<String, Object> deleteUser() throws IOException, ValidationException, NotFoundException {
-    return Map.of();
+  public Map<String, Object> deleteUser(long cardholderId)
+      throws IOException, ValidationException, NotFoundException {
+    var details = fetchDetails();
+    String cardholderUrl = getNestedValue(details, "features", "cardholders", "cardholders", "href");
+    if (cardholderUrl == null) {
+      throw new ValidationException("Unable to parse cardholders url");
+    }
+    var url = HttpUrl.parse(cardholderUrl);
+    if (url == null) {
+      throw new ValidationException("Unable to parse cardholders url");
+    }
+    url = url.newBuilder().addPathSegment(String.valueOf(cardholderId)).build();
+
+    var request = new Request.Builder().url(url).delete().build();
+    try {
+      return makeRequest(request);
+    } catch (NotFoundException nfe) {
+      throw new NotFoundException("Unable to find cardholder", nfe);
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -67,8 +81,14 @@ public class GallagherServiceImpl implements GallagherService {
     if (cardholderUrl == null) {
       throw new ValidationException("Unable to parse cardholders url");
     }
+    var url = HttpUrl.parse(cardholderUrl);
+    if (url == null) {
+      throw new ValidationException("Unable to parse cardholders url");
+    }
+    url = url.newBuilder().addQueryParameter("@email", email)
+        .addQueryParameter("fields", "defaults,personalDataFields").build();
 
-    var request = new Request.Builder().url(cardholderUrl).get().build();
+    var request = new Request.Builder().url(url).get().build();
     try {
       List<Map<String, Object>> response = (List<Map<String, Object>>) makeRequest(request)
           .getOrDefault("results", Collections.emptyList());

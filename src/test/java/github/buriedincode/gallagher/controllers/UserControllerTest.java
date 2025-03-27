@@ -24,7 +24,7 @@ public class UserControllerTest {
 
   @Test
   public void deleteUserTest() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders.delete("/v1/delete")).andExpect(status().isNotImplemented());
+    this.mockMvc.perform(MockMvcRequestBuilders.delete("/v1/delete")).andExpect(status().isInternalServerError());
   }
 
   @Test

@@ -38,11 +38,25 @@ public class UserController {
   @DeleteMapping("/delete")
   public ResponseEntity<Void> deleteUser() {
     log.info("Request to delete user");
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    try {
+      var user = readUser().getBody();
+      var userId = user == null ? null : user.get("id");
+      if (userId == null) {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
+      gallagherService.deleteUser((Long) userId);
+      return new ResponseEntity<>(HttpStatus.OK);
+    } catch (ValidationException ve) {
+      return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+    } catch (NotFoundException nfe) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    } catch (IOException ioe) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @GetMapping("/read")
-  public ResponseEntity<Map<String, Object>> readUser() throws IOException {
+  public ResponseEntity<Map<String, Object>> readUser() {
     log.info("Request to get user");
     try {
       var details = gallagherService.searchUser("john@onugo.com");

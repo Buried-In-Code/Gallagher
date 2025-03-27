@@ -8,7 +8,7 @@ import java.util.Map;
 public interface GallagherService {
   Map<String, Object> createUser(Map<String, Object> data) throws IOException, ValidationException, NotFoundException;
 
-  Map<String, Object> deleteUser() throws IOException, ValidationException, NotFoundException;
+  Map<String, Object> deleteUser(long cardholderId) throws IOException, ValidationException, NotFoundException;
 
   Map<String, Object> searchUser(String email) throws IOException, ValidationException, NotFoundException;
 
