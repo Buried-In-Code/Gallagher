@@ -1,16 +1,13 @@
 package github.buriedincode.gallagher.services;
 
-import github.buriedincode.gallagher.exceptions.NotFoundException;
-import github.buriedincode.gallagher.exceptions.ValidationException;
-import java.io.IOException;
 import java.util.Map;
 
 public interface GallagherService {
-  Map<String, Object> createUser(Map<String, Object> data) throws IOException, ValidationException, NotFoundException;
+  void createUser(Map<String, Object> data);
 
-  Map<String, Object> deleteUser(long cardholderId) throws IOException, ValidationException, NotFoundException;
+  void deleteUser(long cardholderId);
 
-  Map<String, Object> searchUser(String email) throws IOException, ValidationException, NotFoundException;
+  Map<String, Object> searchUser(String email);
 
-  Map<String, Object> updateUser() throws IOException, ValidationException, NotFoundException;
+  Map<String, Object> updateUser();
 }

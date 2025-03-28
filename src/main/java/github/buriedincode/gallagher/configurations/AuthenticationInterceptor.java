@@ -18,16 +18,14 @@ public class AuthenticationInterceptor implements Interceptor {
   public Response intercept(@NotNull Chain chain) throws IOException {
     var request = chain.request();
     var requestTime = System.nanoTime();
-    request = request.newBuilder().header("Accept", "*/*").header("Accept-Encoding", "gzip, deflate")
-        .header("Authorization", credentials()).header("Connection", "keep-alive")
-        .header("Host", request.url().host()).header("User-Agent", "onUgo-test/0.1.0").build();
-    log.info("Sending request to {}\n{}", request.url(), request.headers());
+    request = request.newBuilder().header("Authorization", credentials()).build();
+    log.info("Sending request to {}", request.url());
 
     var response = chain.proceed(request);
 
     var responseTime = System.nanoTime();
-    log.info(String.format("Received response from %s in %.2fms%n%s", response.request().url(),
-        (responseTime - requestTime) / 1e6d, response.headers()));
+    log.info(String.format("Received response from %s in %.2fms", response.request().url(),
+        (responseTime - requestTime) / 1e6d));
     return response;
   }
 

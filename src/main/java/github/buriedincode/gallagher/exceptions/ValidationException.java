@@ -1,6 +1,10 @@
 package github.buriedincode.gallagher.exceptions;
 
-public class ValidationException extends Exception {
+public class ValidationException extends RuntimeException {
+  public ValidationException() {
+    super();
+  }
+
   public ValidationException(String message) {
     super(message);
   }

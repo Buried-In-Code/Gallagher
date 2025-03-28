@@ -7,3 +7,7 @@ gallagher:
 logging:
   level:
     root: "INFO"
+    org.springframework.web.filter.CommonsRequestLoggingFilter: "DEBUG"
+  pattern:
+    console: "[%highlight(%d{yyyy-MM-dd HH:mm:ss})] [%highlight(%-5level)] [%highlight(%logger{2})]\
+      \ %msg%n"

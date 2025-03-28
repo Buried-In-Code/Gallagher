@@ -9,10 +9,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
 import java.security.PrivateKey;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.*;
 import okhttp3.*;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
@@ -39,6 +41,7 @@ public class ApplicationConfiguration {
   @Bean
   public OkHttpClient httpClient(Interceptor authenticationInterceptor) throws Exception {
     try {
+      Security.addProvider(new BouncyCastleProvider());
       var keyStore = KeyStore.getInstance("PKCS12");
       keyStore.load(null, null);
 
@@ -50,7 +53,7 @@ public class ApplicationConfiguration {
 
       var privateKey = loadPrivateKey();
       keyStore.setKeyEntry("client-key", privateKey, "password".toCharArray(),
-          keyStore.getCertificateChain("client-cert"));
+          new Certificate[]{keyStore.getCertificate("client-cert")});
 
       var keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
       keyManagerFactory.init(keyStore, "password".toCharArray());
