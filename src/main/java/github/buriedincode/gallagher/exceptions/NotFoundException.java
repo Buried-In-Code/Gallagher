@@ -1,6 +1,6 @@
 package github.buriedincode.gallagher.exceptions;
 
-public class NotFoundException extends RuntimeException {
+public class NotFoundException extends UnexpectedException {
   public NotFoundException() {
     super();
   }

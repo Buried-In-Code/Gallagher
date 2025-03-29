@@ -3,7 +3,7 @@ services:
   gallagher:
     container_name: "Gallagher"
     env_file:
-    - "./env/.env"
+    - ".env"
     environment:
       TZ: "Pacific/Auckland"
       GALLAGHER_API_KEY: "${GALLAGHER_API_KEY}"

@@ -22,4 +22,11 @@ __TODO:__ Description
 
 ## Usage
 
+1. Create a `.env` file with your Gallagher details
+```dotenv
+GALLAGHER_API_KEY=<API-Key>
+GALLAGHER_BASE_URL=<Base-Url>
+GALLAGHER_CERT_PATH=<Path-to-Cert.pem>
+GALLAGHER_KEY_PATH=<Path-to-Key.pem>
+```
  - Run with: `docker compose up -d`

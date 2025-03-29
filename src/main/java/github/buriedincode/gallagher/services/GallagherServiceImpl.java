@@ -11,15 +11,14 @@ import github.buriedincode.gallagher.exceptions.ForbiddenException;
 import github.buriedincode.gallagher.exceptions.NotFoundException;
 import github.buriedincode.gallagher.exceptions.UnexpectedException;
 import github.buriedincode.gallagher.exceptions.ValidationException;
-import github.buriedincode.gallagher.models.Cardholder;
+import github.buriedincode.gallagher.models.*;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -34,149 +33,169 @@ public class GallagherServiceImpl implements GallagherService {
   private String baseUrl;
 
   @Override
-  public void createCardholder(Cardholder newCardholder) {
+  public void createCardholder(@NotNull UserRequest newUser) {
     var url = fetchEndpoint("features", "cardholders", "cardholders", "href");
 
     String requestBody;
     try {
-      requestBody = objectMapper.writeValueAsString(newCardholder);
+      requestBody = objectMapper.writeValueAsString(newUser);
     } catch (JsonProcessingException jpe) {
-      throw new ValidationException("Unable to parse request body: %s".formatted(jpe.getMessage()), jpe);
+      throw new ValidationException("Unable to serialize object: %s".formatted(jpe.getMessage()), jpe);
     }
     var request = new Request.Builder().url(url)
         .post(RequestBody.create(requestBody, MediaType.get("application/json"))).build();
     try (var response = httpClient.newCall(request).execute()) {
-      if (response.code() == 201) {
+      if (response.code() == 201)
         return;
-      } else {
-        var errorType = new TypeReference<Map<String, String>>() {
-        };
-        var errorMessage = objectMapper.readValue(response.body().string(), errorType).get("message");
-        if (response.code() == 400) {
-          throw new BadRequestException(errorMessage);
-        } else if (response.code() == 403) {
-          throw new ForbiddenException(errorMessage);
-        } else {
-          throw new UnexpectedException(
-              "Unexpected response code: " + response.code() + " : " + errorMessage);
-        }
+      var responseBody = response.body() != null ? response.body().string() : "";
+      switch (response.code()) {
+        case 400 -> throw new BadRequestException(parseErrorMessage(responseBody));
+        case 403 -> throw new ForbiddenException(parseErrorMessage(responseBody));
+        default -> throw new UnexpectedException(
+            "Unexpected response code: " + response.code() + " : " + parseErrorMessage(responseBody));
       }
     } catch (IOException ioe) {
-      log.info("Error calling {}: {}", request.url(), ioe.getMessage());
+      log.error("Error calling {}: {}", request.url(), ioe.getMessage());
       throw new UnexpectedException(ioe.getMessage(), ioe);
     }
   }
 
   @Override
   public void deleteCardholder(long cardholderId) {
-    var url = fetchEndpoint("features", "cardholders", "cardholders", "href");
-    url = url.newBuilder().addPathSegment(String.valueOf(cardholderId)).build();
-
+    var url = fetchEndpoint("features", "cardholders", "cardholders", "href").newBuilder()
+        .addPathSegment(String.valueOf(cardholderId)).build();
     var request = new Request.Builder().url(url).delete().build();
+
     try (var response = httpClient.newCall(request).execute()) {
-      if (response.code() == 200 || response.code() == 204) {
+      if (response.code() == 200 || response.code() == 204)
         return;
-      } else {
-        var errorType = new TypeReference<Map<String, String>>() {
-        };
-        var errorMessage = objectMapper.readValue(response.body().string(), errorType).get("message");
-        if (response.code() == 400) {
-          throw new BadRequestException(errorMessage);
-        } else if (response.code() == 403) {
-          throw new ForbiddenException(errorMessage);
-        } else if (response.code() == 404) {
-          throw new NotFoundException(errorMessage);
-        } else if (response.code() == 409) {
-          throw new ConflictException(errorMessage);
-        } else {
-          throw new UnexpectedException(
-              "Unexpected response code: " + response.code() + " : " + errorMessage);
-        }
+      var responseBody = response.body() != null ? response.body().string() : "";
+      switch (response.code()) {
+        case 400 -> throw new BadRequestException(parseErrorMessage(responseBody));
+        case 403 -> throw new ForbiddenException(parseErrorMessage(responseBody));
+        case 404 -> throw new NotFoundException(parseErrorMessage(responseBody));
+        case 409 -> throw new ConflictException(parseErrorMessage(responseBody));
+        default -> throw new UnexpectedException(
+            "Unexpected response code: " + response.code() + " : " + parseErrorMessage(responseBody));
       }
     } catch (IOException ioe) {
-      log.info("Error calling {}: {}", request.url(), ioe.getMessage());
+      log.error("Error calling {}: {}", request.url(), ioe.getMessage());
       throw new UnexpectedException(ioe.getMessage(), ioe);
     }
   }
 
   @NotNull
-  public Map<String, Object> searchCardholder(String email) {
-    var url = fetchEndpoint("features", "cardholders", "cardholders", "href");
-    url = url.newBuilder().addQueryParameter("@email", email)
-        .addQueryParameter("fields", "defaults,personalDataFields").build();
-
+  @Override
+  public Cardholder getCardholder(long cardholderId) {
+    var url = fetchEndpoint("features", "cardholders", "cardholders", "href").newBuilder()
+        .addPathSegment(String.valueOf(cardholderId)).build();
     var request = new Request.Builder().url(url).get().build();
+
     try (var response = httpClient.newCall(request).execute()) {
-      if (response.code() == 200) {
-        if (response.body() != null) {
-          try {
-            var typeRef = new TypeReference<Map<String, List<Map<String, Object>>>>() {
-            };
-            var details = objectMapper.readValue(response.body().string(), typeRef).get("results");
-            if (!details.isEmpty()) {
-              return details.getFirst();
-            }
-          } catch (JsonProcessingException jpe) {
-            throw new ValidationException("Unable to parse response: " + jpe.getMessage(), jpe);
-          }
+      var responseBody = response.body() != null ? response.body().string() : "";
+      return switch (response.code()) {
+        case 200 -> objectMapper.readValue(responseBody, Cardholder.class);
+        case 404 -> throw new NotFoundException(parseErrorMessage(responseBody));
+        default -> throw new UnexpectedException(
+            "Unexpected response: " + response.code() + " - " + parseErrorMessage(responseBody));
+      };
+    } catch (IOException ioe) {
+      log.error("Error calling {}: {}", request.url(), ioe.getMessage());
+      throw new UnexpectedException(ioe.getMessage(), ioe);
+    }
+  }
+
+  @Nullable
+  @Override
+  public CardholderSummary searchCardholder(@NotNull String email) {
+    var emailPdf = searchPDF("email");
+    if (emailPdf == null) {
+      return null;
+    }
+    var emailId = emailPdf.id();
+
+    var url = fetchEndpoint("features", "cardholders", "cardholders", "href").newBuilder()
+        .addEncodedQueryParameter("pdf_" + emailId, "\"%s\"".formatted(email))
+        .addQueryParameter("fields", "defaults,personalDataFields").build();
+    var request = new Request.Builder().url(url).get().build();
+
+    try (var response = httpClient.newCall(request).execute()) {
+      var responseBody = response.body() != null ? response.body().string() : "";
+      switch (response.code()) {
+        case 200 -> {
+          var details = objectMapper
+              .readValue(responseBody, new TypeReference<SearchResponse<CardholderSummary>>() {
+              }).results();
+          return details.isEmpty() ? null : details.getFirst();
         }
-        throw new NotFoundException("Unable to find cardholder.");
-      } else {
-        var errorType = new TypeReference<Map<String, String>>() {
-        };
-        var errorMessage = objectMapper.readValue(response.body().string(), errorType).get("message");
-        if (response.code() == 400) {
-          throw new BadRequestException(errorMessage);
-        } else if (response.code() == 403) {
-          throw new ForbiddenException(errorMessage);
-        } else if (response.code() == 404) {
-          throw new NotFoundException(errorMessage);
-        } else {
-          throw new UnexpectedException(
-              "Unexpected response code: " + response.code() + " : " + errorMessage);
-        }
+        case 400 -> throw new BadRequestException(parseErrorMessage(responseBody));
+        case 403 -> throw new ForbiddenException(parseErrorMessage(responseBody));
+        default -> throw new UnexpectedException(
+            "Unexpected response code: " + response.code() + " : " + parseErrorMessage(responseBody));
       }
     } catch (IOException ioe) {
-      log.info("Error calling {}: {}", request.url(), ioe.getMessage());
+      log.error("Error calling {}: {}", request.url(), ioe.getMessage());
+      throw new UnexpectedException(ioe.getMessage(), ioe);
+    }
+  }
+
+  @Nullable
+  @Override
+  public PersonalDataFieldSummary searchPDF(@NotNull String name) {
+    var url = fetchEndpoint("features", "personalDataFields", "personalDataFields", "href").newBuilder()
+        .addQueryParameter("name", name).build();
+    var request = new Request.Builder().url(url).get().build();
+
+    try (var response = httpClient.newCall(request).execute()) {
+      var responseBody = response.body() != null ? response.body().string() : "";
+      switch (response.code()) {
+        case 200 -> {
+          var details = objectMapper
+              .readValue(responseBody, new TypeReference<SearchResponse<PersonalDataFieldSummary>>() {
+              }).results();
+          return details.isEmpty() ? null : details.getFirst();
+        }
+        case 403 -> throw new ForbiddenException(parseErrorMessage(responseBody));
+        default -> throw new UnexpectedException(
+            "Unexpected response: " + response.code() + " - " + parseErrorMessage(responseBody));
+      }
+    } catch (IOException ioe) {
+      log.error("Error calling {}: {}", request.url(), ioe.getMessage());
       throw new UnexpectedException(ioe.getMessage(), ioe);
     }
   }
 
   @Override
-  public Map<String, Object> updateCardholder(long cardholderId) {
-    return Map.of();
+  public void updateCardholder(long cardholderId) {
+    throw new UnexpectedException("Not Yet Implemented");
   }
 
   @NotNull
   private HttpUrl fetchEndpoint(String... fields) {
     var request = new Request.Builder().url(baseUrl + "/api").get().build();
+
     try (var response = httpClient.newCall(request).execute()) {
-      if (response.code() == 200) {
-        if (response.body() != null) {
-          try {
-            var typeRef = new TypeReference<Map<String, Object>>() {
-            };
-            var details = objectMapper.readValue(response.body().string(), typeRef);
-            String endpointUrl = getNestedValue(details, fields);
-            if (endpointUrl == null) {
-              throw new NotFoundException("Unable to find Nested Value: " + Arrays.toString(fields));
-            }
-            var result = HttpUrl.parse(endpointUrl);
-            if (result == null) {
-              throw new ValidationException("Unable to parse endpoint: " + endpointUrl);
-            }
-            return result;
-          } catch (JsonProcessingException jpe) {
-            throw new ValidationException("Unable to parse response: " + jpe.getMessage(), jpe);
-          }
-        }
-        throw new NotFoundException("Url response is missing: " + baseUrl + "/api");
-      } else {
-        throw new UnexpectedException("Unexpected response code: " + response.code());
+      var responseBody = response.body() != null ? response.body().string() : "";
+
+      try {
+        var details = objectMapper.readValue(responseBody, new TypeReference<Map<String, Object>>() {
+        });
+        var endpointUrl = (String) Optional.ofNullable(getNestedValue(details, fields)).orElseThrow(
+            () -> new NotFoundException("Unable to find nested value: " + Arrays.toString(fields)));
+        return Optional.ofNullable(HttpUrl.parse(endpointUrl))
+            .orElseThrow(() -> new ValidationException("Unable to parse endpoint: " + endpointUrl));
+      } catch (JsonProcessingException jpe) {
+        throw new ValidationException("Unable to parse response: " + jpe.getMessage(), jpe);
       }
     } catch (IOException ioe) {
-      log.info("Error calling {}: {}", request.url(), ioe.getMessage());
+      log.error("Error calling {}: {}", request.url(), ioe.getMessage());
       throw new UnexpectedException(ioe.getMessage(), ioe);
     }
+  }
+
+  @NotNull
+  private String parseErrorMessage(String responseBody) throws IOException {
+    return objectMapper.readValue(responseBody, new TypeReference<Map<String, String>>() {
+    }).getOrDefault("message", "Unknown error");
   }
 }

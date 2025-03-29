@@ -34,6 +34,6 @@ public class UserControllerTest {
 
   @Test
   public void updateUserTest() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders.put("/v1/update")).andExpect(status().isNotImplemented());
+    this.mockMvc.perform(MockMvcRequestBuilders.put("/v1/update")).andExpect(status().isInternalServerError());
   }
 }

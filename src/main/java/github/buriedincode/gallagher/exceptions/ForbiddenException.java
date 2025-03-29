@@ -1,6 +1,6 @@
 package github.buriedincode.gallagher.exceptions;
 
-public class ForbiddenException extends RuntimeException {
+public class ForbiddenException extends UnexpectedException {
   public ForbiddenException() {
     super();
   }

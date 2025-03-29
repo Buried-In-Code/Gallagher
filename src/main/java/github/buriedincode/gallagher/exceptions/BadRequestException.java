@@ -1,6 +1,6 @@
 package github.buriedincode.gallagher.exceptions;
 
-public class BadRequestException extends RuntimeException {
+public class BadRequestException extends UnexpectedException {
   public BadRequestException() {
     super();
   }

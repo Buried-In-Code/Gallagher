@@ -1,9 +1,9 @@
 ---
 gallagher:
-  api-key: "${GALLAGHER_API_KEY}"
-  base-url: "${GALLAGHER_BASE_URL}"
-  cert-path: "${GALLAGHER_CERT_PATH}"
-  key-path: "${GALLAGHER_KEY_PATH}"
+  api-key: "${GALLAGHER__API_KEY}"
+  base-url: "${GALLAGHER__BASE_URL}"
+  cert-path: "${GALLAGHER__CERT_PATH}"
+  key-path: "${GALLAGHER__KEY_PATH}"
 logging:
   level:
     root: "INFO"
@@ -11,3 +11,10 @@ logging:
   pattern:
     console: "[%highlight(%d{yyyy-MM-dd HH:mm:ss})] [%highlight(%-5level)] [%highlight(%logger{2})]\
       \ %msg%n"
+user:
+  email: "${USER__EMAIL}"
+  firstName: "${USER__FIRST_NAME}"
+  lastName: "${USER__LAST_NAME}"
+  divisionHref: "${USER__DIVISION_HREF}"
+  accessGroupHref: "${USER__ACCESS_GROUP_HREF}"
+  externalId: "${USER__EXTERNAL_ID}"

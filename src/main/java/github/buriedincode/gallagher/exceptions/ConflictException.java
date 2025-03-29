@@ -1,6 +1,6 @@
 package github.buriedincode.gallagher.exceptions;
 
-public class ConflictException extends RuntimeException {
+public class ConflictException extends UnexpectedException {
   public ConflictException() {
     super();
   }
