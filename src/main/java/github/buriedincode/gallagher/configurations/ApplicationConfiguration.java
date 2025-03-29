@@ -39,42 +39,43 @@ public class ApplicationConfiguration {
   }
 
   @Bean
-  public OkHttpClient httpClient(Interceptor authenticationInterceptor) throws Exception {
-    try {
-      Security.addProvider(new BouncyCastleProvider());
-      var keyStore = KeyStore.getInstance("PKCS12");
-      keyStore.load(null, null);
+  @Profile("default")
+  public OkHttpClient httpClient(Interceptor authenticationInterceptor) {
+    Security.addProvider(new BouncyCastleProvider());
+    var keyStore = KeyStore.getInstance("PKCS12");
+    keyStore.load(null, null);
 
-      var certificateFactory = CertificateFactory.getInstance("X.509");
-      try (InputStream certInputStream = new FileInputStream(certPath)) {
-        var clientCert = certificateFactory.generateCertificate(certInputStream);
-        keyStore.setCertificateEntry("client-cert", clientCert);
-      }
-
-      var privateKey = loadPrivateKey();
-      keyStore.setKeyEntry("client-key", privateKey, "password".toCharArray(),
-          new Certificate[]{keyStore.getCertificate("client-cert")});
-
-      var keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
-      keyManagerFactory.init(keyStore, "password".toCharArray());
-
-      var trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-      trustManagerFactory.init((KeyStore) null);
-
-      var sslContext = SSLContext.getInstance("TLS");
-      sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(),
-          new SecureRandom());
-
-      return new OkHttpClient.Builder().addInterceptor(authenticationInterceptor)
-          .sslSocketFactory(sslContext.getSocketFactory(),
-              (X509TrustManager) trustManagerFactory.getTrustManagers()[0])
-          .connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
-          .writeTimeout(10, TimeUnit.SECONDS).build();
-    } catch (IOException ioe) {
-      return new OkHttpClient.Builder().addInterceptor(authenticationInterceptor)
-          .connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
-          .writeTimeout(10, TimeUnit.SECONDS).build();
+    var certificateFactory = CertificateFactory.getInstance("X.509");
+    try (InputStream certInputStream = new FileInputStream(certPath)) {
+      var clientCert = certificateFactory.generateCertificate(certInputStream);
+      keyStore.setCertificateEntry("client-cert", clientCert);
     }
+
+    var privateKey = loadPrivateKey();
+    keyStore.setKeyEntry("client-key", privateKey, "password".toCharArray(),
+        new Certificate[]{keyStore.getCertificate("client-cert")});
+
+    var keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+    keyManagerFactory.init(keyStore, "password".toCharArray());
+
+    var trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+    trustManagerFactory.init((KeyStore) null);
+
+    var sslContext = SSLContext.getInstance("TLS");
+    sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
+
+    return new OkHttpClient.Builder().addInterceptor(authenticationInterceptor)
+        .sslSocketFactory(sslContext.getSocketFactory(),
+            (X509TrustManager) trustManagerFactory.getTrustManagers()[0])
+        .connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS).build();
+  }
+
+  @Bean
+  @Profile("local")
+  public OkHttpClient httpClient(Interceptor authenticationInterceptor) {
+    return new OkHttpClient.Builder().addInterceptor(authenticationInterceptor).connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.SECONDS).writeTimeout(10, TimeUnit.SECONDS).build();
   }
 
   public PrivateKey loadPrivateKey() throws IOException {

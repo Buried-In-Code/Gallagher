@@ -11,6 +11,7 @@ import github.buriedincode.gallagher.exceptions.ForbiddenException;
 import github.buriedincode.gallagher.exceptions.NotFoundException;
 import github.buriedincode.gallagher.exceptions.UnexpectedException;
 import github.buriedincode.gallagher.exceptions.ValidationException;
+import github.buriedincode.gallagher.models.Cardholder;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +34,7 @@ public class GallagherServiceImpl implements GallagherService {
   private String baseUrl;
 
   @Override
-  public void createUser(Map<String, Object> data) {
+  public void createCardholder(Cardholder newCardholder) {
     var url = fetchEndpoint("features", "cardholders", "cardholders", "href");
 
     String requestBody;

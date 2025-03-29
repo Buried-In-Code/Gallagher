@@ -1,13 +1,14 @@
 package github.buriedincode.gallagher.services;
 
+import github.buriedincode.gallagher.models.Cardholder;
 import java.util.Map;
 
 public interface GallagherService {
-  void createUser(Map<String, Object> data);
+  void createCardholder(Cardholder newCardholder);
 
-  void deleteUser(long cardholderId);
+  void deleteCardholder(long cardholderId);
 
-  Map<String, Object> searchUser(String email);
+  Map<String, Object> searchCardholder(String email);
 
-  Map<String, Object> updateUser();
+  Map<String, Object> updateCardholder(long cardholderId);
 }
