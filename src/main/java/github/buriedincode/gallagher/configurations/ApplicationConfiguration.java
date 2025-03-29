@@ -19,6 +19,7 @@ import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,9 +39,9 @@ public class ApplicationConfiguration {
     return new AuthenticationInterceptor(apiKey);
   }
 
-  @Bean
+  @Bean("httpClient")
   @Profile("default")
-  public OkHttpClient httpClient(Interceptor authenticationInterceptor) {
+  public OkHttpClient defaultHttpClient(Interceptor authenticationInterceptor) {
     Security.addProvider(new BouncyCastleProvider());
     var keyStore = KeyStore.getInstance("PKCS12");
     keyStore.load(null, null);
@@ -71,9 +72,9 @@ public class ApplicationConfiguration {
         .writeTimeout(10, TimeUnit.SECONDS).build();
   }
 
-  @Bean
+  @Bean("httpClient")
   @Profile("local")
-  public OkHttpClient httpClient(Interceptor authenticationInterceptor) {
+  public OkHttpClient localHttpClient(Interceptor authenticationInterceptor) {
     return new OkHttpClient.Builder().addInterceptor(authenticationInterceptor).connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS).writeTimeout(10, TimeUnit.SECONDS).build();
   }

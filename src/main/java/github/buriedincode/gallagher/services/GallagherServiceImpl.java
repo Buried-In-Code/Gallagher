@@ -39,7 +39,7 @@ public class GallagherServiceImpl implements GallagherService {
 
     String requestBody;
     try {
-      requestBody = objectMapper.writeValueAsString(data);
+      requestBody = objectMapper.writeValueAsString(newCardholder);
     } catch (JsonProcessingException jpe) {
       throw new ValidationException("Unable to parse request body: %s".formatted(jpe.getMessage()), jpe);
     }
@@ -68,7 +68,7 @@ public class GallagherServiceImpl implements GallagherService {
   }
 
   @Override
-  public void deleteUser(long cardholderId) {
+  public void deleteCardholder(long cardholderId) {
     var url = fetchEndpoint("features", "cardholders", "cardholders", "href");
     url = url.newBuilder().addPathSegment(String.valueOf(cardholderId)).build();
 
@@ -100,7 +100,7 @@ public class GallagherServiceImpl implements GallagherService {
   }
 
   @NotNull
-  public Map<String, Object> searchUser(String email) {
+  public Map<String, Object> searchCardholder(String email) {
     var url = fetchEndpoint("features", "cardholders", "cardholders", "href");
     url = url.newBuilder().addQueryParameter("@email", email)
         .addQueryParameter("fields", "defaults,personalDataFields").build();
@@ -143,7 +143,7 @@ public class GallagherServiceImpl implements GallagherService {
   }
 
   @Override
-  public Map<String, Object> updateUser() {
+  public Map<String, Object> updateCardholder(long cardholderId) {
     return Map.of();
   }
 
