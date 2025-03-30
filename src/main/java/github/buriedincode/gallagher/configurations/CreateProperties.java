@@ -10,10 +10,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "user")
+@ConfigurationProperties(prefix = "create.user")
 @Getter
 @Setter
-public class UserProperties {
+public class CreateProperties {
   private String email;
   private String firstName;
   private String lastName;

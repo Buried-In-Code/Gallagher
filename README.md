@@ -23,10 +23,27 @@ __TODO:__ Description
 ## Usage
 
 1. Create a `.env` file with your Gallagher details
-```dotenv
-GALLAGHER_API_KEY=<API-Key>
-GALLAGHER_BASE_URL=<Base-Url>
-GALLAGHER_CERT_PATH=<Path-to-Cert.pem>
-GALLAGHER_KEY_PATH=<Path-to-Key.pem>
-```
- - Run with: `docker compose up -d`
+    ```dotenv
+    GALLAGHER__API_KEY='EXAM-PLE-API-KEY'
+    GALLAGHER__BASE_URL='https://example.com'
+    GALLAGHER__CERT_PATH='./example-cert.pem'
+    GALLAGHER__KEY_PATH='./example-key.pem'
+    
+    CREATE__USER__EMAIL='user@example.com'
+    CREATE__USER__FIRST_NAME='Joe'
+    CREATE__USER__LAST_NAME='Bloggs'
+    CREATE__USER__DIVISION_HREF='https://example.com/api/division/123'
+    CREATE__USER__ACCESS_GROUP_HREF='https://example.com/api/access-group/123'
+    CREATE__USER__EXTERNAL_ID='AAA-12345-BBB'
+    
+    READ__USER__EMAIL='user@example.com'
+    
+    UPDATE__CARD__TYPE_HREF='https://example.com/api/card-type/123'
+    UPDATE__CARD__NUMBER='Test Card'
+    UPDATE__USER__EMAIL='user@example.com'
+
+    DELETE__USER__EMAIL='user@example.com'
+    ```
+
+2. Download or copy the [docker-compose.yaml](./docker-compose.yaml) file
+3. Run with: `docker compose up -d`

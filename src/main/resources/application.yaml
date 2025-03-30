@@ -11,10 +11,22 @@ logging:
   pattern:
     console: "[%highlight(%d{yyyy-MM-dd HH:mm:ss})] [%highlight(%-5level)] [%highlight(%logger{2})]\
       \ %msg%n"
-user:
-  email: "${USER__EMAIL}"
-  firstName: "${USER__FIRST_NAME}"
-  lastName: "${USER__LAST_NAME}"
-  divisionHref: "${USER__DIVISION_HREF}"
-  accessGroupHref: "${USER__ACCESS_GROUP_HREF}"
-  externalId: "${USER__EXTERNAL_ID}"
+create:
+  user:
+    email: "${CREATE__USER__EMAIL}"
+    firstName: "${CREATE__USER__FIRST_NAME}"
+    lastName: "${CREATE__USER__LAST_NAME}"
+    divisionHref: "${CREATE__USER__DIVISION_HREF}"
+    accessGroupHref: "${CREATE__USER__ACCESS_GROUP_HREF}"
+    externalId: "${CREATE__USER__EXTERNAL_ID}"
+read:
+  user:
+    email: "${READ__USER__EMAIL}"
+update:
+  card:
+    type-href: "${UPDATE__CARD__TYPE_HREF}"
+    number: "${UPDATE__CARD__NUMBER}"
+  user:
+    email: "${UPDATE__USER__EMAIL}"
+delete:
+  email: "${DELETE__USER__EMAIL}"
