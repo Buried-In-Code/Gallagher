@@ -1,6 +1,8 @@
 package github.buriedincode.gallagher.controllers;
 
 import github.buriedincode.gallagher.configurations.UserProperties;
+import github.buriedincode.gallagher.exceptions.ConflictException;
+import github.buriedincode.gallagher.exceptions.NotFoundException;
 import github.buriedincode.gallagher.models.UserResponse;
 import github.buriedincode.gallagher.services.GallagherService;
 import java.util.Map;
@@ -22,6 +24,10 @@ public class UserController {
   public ResponseEntity<Map<String, Object>> createUser() {
     log.info("Request to create user");
 
+    var cardholder = gallagherService.searchCardholder(userProperties.getEmail());
+    if (cardholder != null)
+      throw new ConflictException("Cardholder already exists");
+
     gallagherService.createCardholder(userProperties.getUser());
     return new ResponseEntity<>(HttpStatus.OK);
   }
@@ -33,7 +39,7 @@ public class UserController {
     var cardholder = gallagherService.searchCardholder(userProperties.getEmail());
     var cardholderId = cardholder == null ? null : cardholder.id();
     if (cardholderId == null) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      throw new NotFoundException("Cardholder not found");
     }
     gallagherService.deleteCardholder(cardholderId);
     return new ResponseEntity<>(HttpStatus.OK);
@@ -45,7 +51,7 @@ public class UserController {
     var cardholderSummary = gallagherService.searchCardholder(userProperties.getEmail());
     var cardholder = cardholderSummary == null ? null : gallagherService.getCardholder(cardholderSummary.id());
     if (cardholder == null) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      throw new NotFoundException("Cardholder not found");
     }
     return new ResponseEntity<>(UserResponse.fromCardholder(cardholder), HttpStatus.OK);
   }
@@ -57,7 +63,7 @@ public class UserController {
     var cardholder = gallagherService.searchCardholder(userProperties.getEmail());
     var cardholderId = cardholder == null ? null : cardholder.id();
     if (cardholderId == null) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      throw new NotFoundException("Cardholder not found");
     }
     gallagherService.updateCardholder(cardholderId);
     return new ResponseEntity<>(HttpStatus.OK);
