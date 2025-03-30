@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public record Cardholder(List<AccessGroup> accessGroups, boolean authorised, List<Object> cards, Division division,
-    String firstName, String href, long id, String lastName, Map<String, Object> additionalFields) {
+    @NotNull String firstName, @NotNull String href, long id, @NotNull String lastName,
+    Map<String, Object> additionalFields) {
   public Cardholder {
     accessGroups = accessGroups == null ? new ArrayList<>() : accessGroups;
     cards = cards == null ? new ArrayList<>() : cards;
@@ -23,12 +25,9 @@ public record Cardholder(List<AccessGroup> accessGroups, boolean authorised, Lis
   }
 
   @JsonIgnoreProperties(ignoreUnknown = true)
-  public record AccessGroup(Link accessGroup) {
+  public record AccessGroup(@NotNull NamedLink accessGroup) {
   }
 
-  public record Division(String href, long id) {
-  }
-
-  public record Link(String href, String name) {
+  public record Division(@NotNull String href, long id) {
   }
 }

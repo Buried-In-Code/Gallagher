@@ -16,7 +16,7 @@ read:
 update:
   card:
     type-href: "http://localhost:25710/card-types/1"
-    number: "Test Card"
+    number: 12345
   user:
     email: "user@example.com"
 delete:

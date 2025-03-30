@@ -9,9 +9,9 @@ import github.buriedincode.gallagher.exceptions.NotFoundException;
 import github.buriedincode.gallagher.models.UserResponse;
 import github.buriedincode.gallagher.services.GallagherService;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,47 +31,50 @@ public class UserController {
     log.info("Request to create user");
 
     var cardholder = gallagherService.searchCardholder(createProperties.getEmail());
-    if (cardholder != null)
+    if (cardholder != null) {
       throw new ConflictException("Cardholder already exists");
+    }
 
     gallagherService.createCardholder(createProperties.getUser());
-    return new ResponseEntity<>(HttpStatus.OK);
+    return ResponseEntity.ok().build();
   }
 
   @DeleteMapping("/delete")
   public ResponseEntity<Void> deleteUser() {
     log.info("Request to delete user");
 
-    var cardholder = gallagherService.searchCardholder(deleteProperties.getEmail());
-    var cardholderId = cardholder == null ? null : cardholder.id();
-    if (cardholderId == null) {
-      throw new NotFoundException("Cardholder not found");
-    }
-    gallagherService.deleteCardholder(cardholderId);
-    return new ResponseEntity<>(HttpStatus.OK);
+    var cardholder = Optional.ofNullable(gallagherService.searchCardholder(deleteProperties.getEmail()))
+        .orElseThrow(() -> new NotFoundException("Cardholder not found"));
+    gallagherService.deleteCardholder(cardholder.id());
+
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/read")
   public ResponseEntity<UserResponse> readUser() {
     log.info("Request to read user");
-    var cardholderSummary = gallagherService.searchCardholder(readProperties.getEmail());
-    var cardholder = cardholderSummary == null ? null : gallagherService.getCardholder(cardholderSummary.id());
-    if (cardholder == null) {
-      throw new NotFoundException("Cardholder not found");
-    }
-    return new ResponseEntity<>(UserResponse.fromCardholder(cardholder), HttpStatus.OK);
+
+    var cardholder = Optional.ofNullable(gallagherService.searchCardholder(readProperties.getEmail()))
+        .map(summary -> gallagherService.getCardholder(summary.id()))
+        .orElseThrow(() -> new NotFoundException("Cardholder not found"));
+
+    return ResponseEntity.ok(UserResponse.fromCardholder(cardholder));
   }
 
   @PutMapping("/update")
   public ResponseEntity<Void> updateUser() {
     log.info("Request to update user");
 
-    var cardholder = gallagherService.searchCardholder(updateProperties.getUserEmail());
-    var cardholderId = cardholder == null ? null : cardholder.id();
-    if (cardholderId == null) {
-      throw new NotFoundException("Cardholder not found");
+    var cardholder = Optional.ofNullable(gallagherService.searchCardholder(updateProperties.getUserEmail()))
+        .orElseThrow(() -> new NotFoundException("Cardholder not found"));
+    var cardExists = cardholder.cards().stream()
+        .anyMatch(card -> card.type().href().equals(updateProperties.getCardTypeHref())
+            && card.number() == updateProperties.getCardNumber());
+    if (cardExists) {
+      throw new ConflictException("Cardholder already has this card");
     }
-    gallagherService.updateCardholder(cardholderId);
-    return new ResponseEntity<>(HttpStatus.OK);
+    gallagherService.addCardToCardholder(cardholder.id(), updateProperties.getCard());
+
+    return ResponseEntity.ok().build();
   }
 }

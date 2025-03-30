@@ -1,13 +1,12 @@
 package github.buriedincode.gallagher.services;
 
-import github.buriedincode.gallagher.models.Cardholder;
-import github.buriedincode.gallagher.models.CardholderSummary;
-import github.buriedincode.gallagher.models.PersonalDataFieldSummary;
-import github.buriedincode.gallagher.models.UserRequest;
+import github.buriedincode.gallagher.models.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface GallagherService {
+  void addCardToCardholder(long cardholderId, @NotNull AddCardRequest newCard);
+
   void createCardholder(@NotNull UserRequest newUser);
 
   void deleteCardholder(long cardholderId);
@@ -20,6 +19,4 @@ public interface GallagherService {
 
   @Nullable
   PersonalDataFieldSummary searchPDF(@NotNull String name);
-
-  void updateCardholder(long cardholderId);
 }

@@ -37,9 +37,9 @@ __TODO:__ Description
     CREATE__USER__EXTERNAL_ID='AAA-12345-BBB'
     
     READ__USER__EMAIL='user@example.com'
-    
+
     UPDATE__CARD__TYPE_HREF='https://example.com/api/card-type/123'
-    UPDATE__CARD__NUMBER='Test Card'
+    UPDATE__CARD__NUMBER=12345
     UPDATE__USER__EMAIL='user@example.com'
 
     DELETE__USER__EMAIL='user@example.com'

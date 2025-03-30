@@ -1,8 +1,8 @@
 package github.buriedincode.gallagher.configurations;
 
+import github.buriedincode.gallagher.models.Link;
 import github.buriedincode.gallagher.models.UserRequest;
 import github.buriedincode.gallagher.models.UserRequest.AccessGroup;
-import github.buriedincode.gallagher.models.UserRequest.Link;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;

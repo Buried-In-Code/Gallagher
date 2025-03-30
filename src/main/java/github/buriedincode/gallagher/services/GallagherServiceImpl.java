@@ -33,6 +33,37 @@ public class GallagherServiceImpl implements GallagherService {
   private String baseUrl;
 
   @Override
+  public void addCardToCardholder(long cardholderId, @NotNull AddCardRequest newCard) {
+    var url = fetchEndpoint("features", "cardholders", "cardholders", "href").newBuilder()
+        .addPathSegment(String.valueOf(cardholderId)).build();
+
+    String requestBody;
+    try {
+      requestBody = objectMapper.writeValueAsString(newCard);
+    } catch (JsonProcessingException jpe) {
+      throw new ValidationException("Unable to serialize object: %s".formatted(jpe.getMessage()), jpe);
+    }
+    var request = new Request.Builder().url(url)
+        .patch(RequestBody.create(requestBody, MediaType.get("application/json"))).build();
+
+    try (var response = httpClient.newCall(request).execute()) {
+      if (response.code() == 200 || response.code() == 204)
+        return;
+      var responseBody = response.body() != null ? response.body().string() : "";
+      switch (response.code()) {
+        case 400 -> throw new BadRequestException(parseErrorMessage(responseBody));
+        case 403 -> throw new ForbiddenException(parseErrorMessage(responseBody));
+        case 409 -> throw new ConflictException(parseErrorMessage(responseBody));
+        default -> throw new UnexpectedException(
+            "Unexpected response code: " + response.code() + " : " + parseErrorMessage(responseBody));
+      }
+    } catch (IOException ioe) {
+      log.error("Error calling {}: {}", request.url(), ioe.getMessage());
+      throw new UnexpectedException(ioe.getMessage(), ioe);
+    }
+  }
+
+  @Override
   public void createCardholder(@NotNull UserRequest newUser) {
     var url = fetchEndpoint("features", "cardholders", "cardholders", "href");
 
@@ -44,6 +75,7 @@ public class GallagherServiceImpl implements GallagherService {
     }
     var request = new Request.Builder().url(url)
         .post(RequestBody.create(requestBody, MediaType.get("application/json"))).build();
+
     try (var response = httpClient.newCall(request).execute()) {
       if (response.code() == 201)
         return;
@@ -116,7 +148,7 @@ public class GallagherServiceImpl implements GallagherService {
 
     var url = fetchEndpoint("features", "cardholders", "cardholders", "href").newBuilder()
         .addEncodedQueryParameter("pdf_" + emailId, "\"%s\"".formatted(email))
-        .addQueryParameter("fields", "defaults,personalDataFields").build();
+        .addQueryParameter("fields", "defaults,personalDataFields,cards").build();
     var request = new Request.Builder().url(url).get().build();
 
     try (var response = httpClient.newCall(request).execute()) {
@@ -163,11 +195,6 @@ public class GallagherServiceImpl implements GallagherService {
       log.error("Error calling {}: {}", request.url(), ioe.getMessage());
       throw new UnexpectedException(ioe.getMessage(), ioe);
     }
-  }
-
-  @Override
-  public void updateCardholder(long cardholderId) {
-    throw new UnexpectedException("Not Yet Implemented");
   }
 
   @NotNull
