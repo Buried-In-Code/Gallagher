@@ -1,9 +1,28 @@
 ---
 gallagher:
   api-key: "API-Key"
-  base-url: "http://127.0.0.1:25710"
+  base-url: "http://localhost:25710"
   cert-path: ""
   key-path: ""
 logging:
   level:
     root: "INFO"
+create:
+  user:
+    email: "user@example.com"
+    firstName: "Joe"
+    lastName: "Bloggs"
+    divisionHref: "http://localhost:25710/divisions/1"
+    accessGroupHref: "http://localhost:25710/access-groups/1"
+    externalId: "AAA-123-BBB"
+read:
+  user:
+    email: "user@example.com"
+update:
+  card:
+    type-href: "http://localhost:25710/card-types/1"
+    number: 12345
+  user:
+    email: "user@example.com"
+delete:
+  email: "user@example.com"
