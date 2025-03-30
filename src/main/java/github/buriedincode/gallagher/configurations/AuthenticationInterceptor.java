@@ -22,7 +22,7 @@ public class AuthenticationInterceptor implements Interceptor {
     var request = chain.request();
     var requestTime = System.nanoTime();
     request = request.newBuilder().header("Authorization", credentials()).build();
-    log.info("Sending request to {}", request.url());
+    log.info("Sending {} request to /{}", request.method(), String.join("/", request.url().pathSegments()));
     if (debug)
       log.debug("Details: {}\n{}", request.headers(),
           request.body() == null ? null : stringifyRequestBody(request));
@@ -30,7 +30,7 @@ public class AuthenticationInterceptor implements Interceptor {
     var response = chain.proceed(request);
 
     var responseTime = System.nanoTime();
-    log.info("Received response from %s in %.2fms".formatted(response.request().url(),
+    log.info("Received %s response from /%s in %.2fms".formatted(response.request().method(), String.join("/", response.request().url().pathSegments()),
         (responseTime - requestTime) / 1e6d));
     return response;
   }

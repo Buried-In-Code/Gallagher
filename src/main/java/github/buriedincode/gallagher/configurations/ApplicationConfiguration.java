@@ -48,7 +48,7 @@ public class ApplicationConfiguration {
 
       var certificateFactory = CertificateFactory.getInstance("X.509");
       var decodedCert = Base64.getDecoder().decode(certContent);
-      var clientCert = certificateFactory.generateCertificate(new String(decodedCert));
+      var clientCert = certificateFactory.generateCertificate(new ByteArrayInputStream(decodedCert));
       keyStore.setCertificateEntry("client-cert", clientCert);
 
       var privateKey = loadPrivateKey();
@@ -79,7 +79,7 @@ public class ApplicationConfiguration {
 
   public PrivateKey loadPrivateKey() throws IOException {
     var decodedKey = Base64.getDecoder().decode(keyContent);
-    var pemParser = new PEMParser(new String(decodedKey));
+    var pemParser = new PEMParser(new StringReader(new String(decodedKey)));
     var converter = new JcaPEMKeyConverter().setProvider("BC");
     var object = pemParser.readObject();
     var kp = converter.getKeyPair((PEMKeyPair) object);
