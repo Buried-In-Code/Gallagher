@@ -2,8 +2,8 @@
 gallagher:
   api-key: "${GALLAGHER__API_KEY}"
   base-url: "${GALLAGHER__BASE_URL}"
-  cert-path: "${GALLAGHER__CERT_PATH}"
-  key-path: "${GALLAGHER__KEY_PATH}"
+  certificate: "${GALLAGHER__CERTIFICATE}"
+  private-key: "${GALLAGHER__PRIVATE_KEY}"
 logging:
   level:
     root: "INFO"

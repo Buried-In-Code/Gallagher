@@ -2,14 +2,12 @@
 services:
   gallagher:
     container_name: "Gallagher"
+    depends_on:
+    - "nginx"
     env_file:
     - ".env"
     environment:
       TZ: "Pacific/Auckland"
-      GALLAGHER_API_KEY: "${GALLAGHER_API_KEY}"
-      GALLAGHER_BASE_URL: "${GALLAGHER_BASE_URL}"
-      GALLAGHER_CERT_PATH: "${GALLAGHER_CERT_PATH}"
-      GALLAGHER_KEY_PATH: "${GALLAGHER_KEY_PATH}"
     expose:
     - "8080"
     image: "ghcr.io/buried-in-code/gallagher:latest"

@@ -9,6 +9,7 @@ import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.*;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +28,11 @@ public class ApplicationConfiguration {
   @Value("${gallagher.api-key}")
   private String apiKey;
 
-  @Value("${gallagher.cert-path}")
-  private String certPath;
+  @Value("${gallagher.certificate}")
+  private String certContent;
 
-  @Value("${gallagher.key-path}")
-  private String keyPath;
+  @Value("${gallagher.private-key}")
+  private String keyContent;
 
   @Bean
   public Interceptor authenticationInterceptor() {
@@ -46,10 +47,9 @@ public class ApplicationConfiguration {
       keyStore.load(null, null);
 
       var certificateFactory = CertificateFactory.getInstance("X.509");
-      try (InputStream certInputStream = new FileInputStream(certPath)) {
-        var clientCert = certificateFactory.generateCertificate(certInputStream);
-        keyStore.setCertificateEntry("client-cert", clientCert);
-      }
+      var decodedCert = Base64.getDecoder().decode(certContent);
+      var clientCert = certificateFactory.generateCertificate(new String(decodedCert));
+      keyStore.setCertificateEntry("client-cert", clientCert);
 
       var privateKey = loadPrivateKey();
       keyStore.setKeyEntry("client-key", privateKey, "password".toCharArray(),
@@ -78,14 +78,12 @@ public class ApplicationConfiguration {
   }
 
   public PrivateKey loadPrivateKey() throws IOException {
-    try (FileReader keyReader = new FileReader(keyPath)) {
-
-      var pemParser = new PEMParser(keyReader);
-      var converter = new JcaPEMKeyConverter().setProvider("BC");
-      var object = pemParser.readObject();
-      var kp = converter.getKeyPair((PEMKeyPair) object);
-      return kp.getPrivate();
-    }
+    var decodedKey = Base64.getDecoder().decode(keyContent);
+    var pemParser = new PEMParser(new String(decodedKey));
+    var converter = new JcaPEMKeyConverter().setProvider("BC");
+    var object = pemParser.readObject();
+    var kp = converter.getKeyPair((PEMKeyPair) object);
+    return kp.getPrivate();
   }
 
   @Bean
