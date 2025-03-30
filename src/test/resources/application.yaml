@@ -2,8 +2,8 @@
 gallagher:
   api-key: "API-Key"
   base-url: "http://localhost:25710"
-  cert-path: ""
-  key-path: ""
+  certificate: ""
+  private-key: ""
 logging:
   level:
     root: "INFO"

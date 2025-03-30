@@ -30,8 +30,8 @@ public class AuthenticationInterceptor implements Interceptor {
     var response = chain.proceed(request);
 
     var responseTime = System.nanoTime();
-    log.info("Received %s response from /%s in %.2fms".formatted(response.request().method(), String.join("/", response.request().url().pathSegments()),
-        (responseTime - requestTime) / 1e6d));
+    log.info("Received %s response from /%s in %.2fms".formatted(response.request().method(),
+        String.join("/", response.request().url().pathSegments()), (responseTime - requestTime) / 1e6d));
     return response;
   }
 

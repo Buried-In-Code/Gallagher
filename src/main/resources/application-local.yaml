@@ -2,6 +2,8 @@
 gallagher:
   api-key: "API-Key"
   base-url: "http://localhost:25710"
+  certificate: ""
+  private-key: ""
 create:
   user:
     email: "user@example.com"
