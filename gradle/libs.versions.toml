@@ -4,7 +4,7 @@ okhttp = "4.12.0"
 springBoot = "3.4.4"
 
 [plugins]
-spotless = { id = "com.diffplug.spotless", version = "7.0.2" }
+spotless = { id = "com.diffplug.spotless", version = "7.0.3" }
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
 versions = { id = "com.github.ben-manes.versions", version = "0.52.0" }
 
