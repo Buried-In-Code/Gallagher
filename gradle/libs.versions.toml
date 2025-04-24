@@ -1,7 +1,7 @@
 [versions]
 mockito = "5.17.0"
 okhttp = "4.12.0"
-springBoot = "3.4.4"
+springBoot = "3.4.5"
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version = "7.0.3" }
